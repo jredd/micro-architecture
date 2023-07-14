@@ -1,0 +1,3 @@
+FROM nginx
+
+COPY docker/fastApi.conf /etc/nginx/conf.d/

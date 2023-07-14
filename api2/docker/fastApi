@@ -1,0 +1,14 @@
+FROM python:3.8
+From tensorflow/tensorflow:devel
+
+RUN mkdir /huuman_app
+WORKDIR /huuman_app
+
+ADD . /huuman_app
+
+RUN apt-get update
+RUN apt-get install ffmpeg libsm6 libxext6 libglib2.0-0 cmake -y
+RUN -it -w /tensorflow_src -v $PWD:/mnt -e HOST_PERMS="$(id -u):$(id -g)" tensorflow/tensorflow:devel
+RUN pip install -r requirements.txt
+
+WORKDIR /huuman_app/app

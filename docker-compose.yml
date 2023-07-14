@@ -1,0 +1,40 @@
+version: '3'
+services:
+  gateway:
+    build:
+      context: .
+      dockerfile: "${GATEWAY_CONTAINER_NAME}/docker/Dockerfile-web-service"
+    container_name: "${GATEWAY_CONTAINER_NAME}"
+    volumes:
+      - "./${GATEWAY_CONTAINER_NAME}/logs/:/service/logs"
+    command: "uvicorn main:app --proxy-headers --host 0.0.0.0 --port 8888"
+  gateway-nginx:
+    restart: always
+    build:
+      context: .
+      dockerfile: "${GATEWAY_CONTAINER_NAME}/docker/Dockerfile-nginx"
+    container_name: "${GATEWAY_CONTAINER_NAME}-nginx"
+    volumes:
+      - "./${GATEWAY_CONTAINER_NAME}/logs/:/service/logs"
+    ports:
+      - "80:80"
+    links:
+      - gateway
+
+#  authentication:
+#    build:
+#      context: .
+#      dockerfile: "${AUTH_CONTAINER_NAME}/docker/Dockerfile-web-service"
+#    container_name: "${AUTH_CONTAINER_NAME}"
+#    volumes:
+#      - "./${AUTH_CONTAINER_NAME}/logs/:/service/logs"
+#    command: "uvicorn main:app --proxy-headers --host 0.0.0.0 --port 8888"
+#  authentication-nginx:
+#    restart: always
+#    build:
+#      context: .
+#      dockerfile: "${AUTH_CONTAINER_NAME}/docker/Dockerfile-nginx"
+#    volumes:
+#      - "./${AUTH_CONTAINER_NAME}/logs/:/service/logs"
+#    links:
+#      - authentication
